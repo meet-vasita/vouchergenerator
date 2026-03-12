@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DSK Travels – Voucher Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<div class="print-only" id="print-clone"></div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="brand">DSK <span>Travels</span> LLC &nbsp;·&nbsp; Voucher Generator</div>
+  <button class="print-btn" id="printBtn" onclick="printVoucher()">🖨 Print Voucher</button>
+</div>
+
+<div class="wrapper">
+
+  <!-- ── FORM PANEL ── -->
+  <div class="form-panel">
+
+    <!-- Guest Info -->
+    <div class="form-section">
+      <h3>Guest Information</h3>
+
+      <div class="form-group">
+        <label>Guest Name *</label>
+        <input type="text" id="guestName" placeholder="Kirti Tandon" oninput="update()">
+        <div class="err-msg" id="err-guestName">Guest name is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Adults *</label>
+        <input type="number" id="adults" value="2" min="1" max="20" oninput="update()">
+        <div class="err-msg" id="err-adults">At least 1 adult is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Children</label>
+        <input type="number" id="children" value="0" min="0" max="20" oninput="update()">
+        <div class="err-msg" id="err-children">Invalid number of children.</div>
+      </div>
+
+      <div class="form-group" id="childAgeGroup">
+        <label>Children Age</label>
+        <input type="text" id="childAge" placeholder="e.g. Below 12 Years" oninput="update()">
+      </div>
+    </div>
+
+    <!-- Hotel Info -->
+    <div class="form-section">
+      <h3>Hotel Details</h3>
+
+      <div class="form-group">
+        <label>Hotel Name *</label>
+        <input type="text" id="hotelName" placeholder="e.g. Grand Hyatt Dubai" oninput="update()">
+        <div class="err-msg" id="err-hotelName">Hotel name is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Location *</label>
+        <input type="text" id="hotelLoc" placeholder="e.g. Dubai, United Arab Emirates" oninput="update()">
+        <div class="err-msg" id="err-hotelLoc">Location is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Check-In Date *</label>
+        <input type="date" id="checkIn" onchange="onCheckInChange()">
+        <div class="err-msg" id="err-checkIn">Check-in date is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Nights *</label>
+        <div class="date-nights-row">
+          <input type="number" id="nights" value="" min="1" max="365" placeholder="No. of nights" oninput="onNightsChange()">
+          <div class="nights-badge" id="nightsBadge">—<span>nights</span></div>
+        </div>
+        <div class="err-msg" id="err-nights">Please enter a valid number of nights.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Check-Out Date *</label>
+        <input type="date" id="checkOut" onchange="onCheckOutChange()">
+        <div class="err-msg" id="err-checkOut">Check-out must be after check-in.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Board Basis</label>
+        <select id="boardBasis" onchange="update()">
+          <option value="Bed & Breakfast">Bed &amp; Breakfast</option>
+          <option value="Half Board" selected>Half Board</option>
+          <option value="Full Board">Full Board</option>
+          <option value="All Inclusive">All Inclusive</option>
+          <option value="Room Only">Room Only</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Room -->
+    <div class="form-section">
+      <h3>Room Details</h3>
+      <div class="form-group">
+        <label>Room Type *</label>
+        <input type="text" id="roomType" placeholder="e.g. Superior Family Room" oninput="update()">
+        <div class="err-msg" id="err-roomType">Room type is required.</div>
+      </div>
+    </div>
+
+    <!-- Inclusions -->
+    <div class="form-section">
+      <h3>Special Inclusions</h3>
+      <div class="inc-rows" id="incRows"></div>
+      <button class="add-inc-btn" onclick="addInclusion()">+ Add Inclusion</button>
+    </div>
+
+  </div>
+
+  <!-- ── PREVIEW AREA ── -->
+  <div class="preview-area">
+    <div class="page" id="voucher">
+
+      <div class="v-header">
+        <div class="v-company">
+          <h1>DSK Travels LLC</h1>
+          <p>Travel to live, live to travel</p>
+        </div>
+        <div class="v-logo">
+          <img src="./images/logo.png" alt="DSK Travels Logo">
+        </div>
+      </div>
+
+      <div class="v-title-bar">
+        <h2>Hotel Booking Voucher</h2>
+        <div class="v-confirmed">✓ Confirmed</div>
+      </div>
+
+      <div class="v-guest-row">
+        <div class="v-field">
+          <label>Guest Name</label>
+          <span id="v-guest-name">—</span>
+        </div>
+        <div class="v-field">
+          <label>Occupancy</label>
+          <span id="v-occupancy">—</span>
+        </div>
+        <div class="v-field" id="v-child-age-field" style="display:none;">
+          <label>Children Age</label>
+          <span id="v-child-age">—</span>
+        </div>
+      </div>
+
+      <div class="v-content">
+
+        <div class="v-hotel-row">
+          <div>
+            <div class="v-hotel-name" id="v-hotel-name">—</div>
+            <div class="v-hotel-loc" id="v-hotel-loc">—</div>
+          </div>
+          <div class="v-status">✓ Confirmed</div>
+        </div>
+
+        <div class="v-divider"></div>
+
+        <div class="v-info-grid">
+          <div class="v-info-cell">
+            <label>Check-In</label>
+            <span class="val" id="v-checkin">—</span>
+          </div>
+          <div class="v-info-cell">
+            <label>Check-Out</label>
+            <span class="val" id="v-checkout">—</span>
+          </div>
+          <div class="v-info-cell">
+            <label>Duration</label>
+            <span class="val" id="v-duration">—</span>
+          </div>
+          <div class="v-info-cell">
+            <label>Board Basis</label>
+            <span class="val" id="v-board">—</span>
+            <span class="sub" id="v-board-sub"></span>
+          </div>
+        </div>
+
+        <div class="v-sec-label">Room Details</div>
+        <div class="v-room-card">
+          <div class="rname" id="v-room-name">—</div>
+          <div class="v-tags" id="v-tags"></div>
+        </div>
+
+        <div id="v-inc-section" style="display:none;">
+          <div class="v-sec-label" style="margin-bottom:10px;">Special Inclusions</div>
+          <div class="v-inc-list" id="v-inc-list"></div>
+        </div>
+
+      </div>
+
+      <div class="v-footer">
+        <div class="note">This voucher is issued by DSK Travels LLC and is subject to the hotel's terms &amp; conditions. Please present this voucher upon check-in. For assistance, contact your travel consultant.</div>
+        <div class="tagline">...travel to live, live to travel!</div>
+      </div>
+
+      <div class="v-bottom-bar"></div>
+    </div>
+  </div>
+</div>
+  <script src="main.js"></script>
+</body>
+</html>
